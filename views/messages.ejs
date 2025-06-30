@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slack Messages</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen px-6 py-10">
+  <h1 class="text-3xl text-blue-400 font-bold mb-6 text-center">Recent Slack Messages</h1>
+
+  <div class="max-w-3xl mx-auto space-y-4">
+    <% if (messages.length === 0) { %>
+      <p class="text-gray-400 text-center">No messages found.</p>
+    <% } %>
+
+   <% messages.forEach((msg, index) => { %>
+  <div class="bg-gray-800 p-4 rounded-xl shadow">
+    <p class="text-sm text-blue-300 mb-1">Message <%= index + 1 %></p>
+    <p class="text-lg"><%= msg.text %></p>
+    <p class="text-xs text-gray-400 mt-2">TS: <%= msg.ts %></p>
+
+    <% if (!msg.subtype) { %> <!-- Only show if not a system message -->
+      <form action="/edit" method="POST" class="inline-block mt-2 mr-2">
+        <input type="hidden" name="ts" value="<%= msg.ts %>" />
+        <input type="text" name="newMessage" placeholder="New message..." class="bg-gray-700 text-white px-2 py-1 rounded"/>
+        <button class="text-yellow-400 hover:text-yellow-300 font-semibold ml-2">✏️ Edit</button>
+      </form>
+
+      <form action="/delete" method="POST" class="inline-block mt-2">
+        <input type="hidden" name="ts" value="<%= msg.ts %>" />
+        <button class="text-red-400 hover:text-red-300 font-semibold">🗑️ Delete</button>
+      </form>
+    <% } else { %>
+      <p class="text-gray-500 text-sm mt-2 italic">System message – cannot edit/delete</p>
+    <% } %>
+  </div>
+<% }) %>
+
+  </div>
+</body>
+</html>
